@@ -3,7 +3,11 @@ import time
 from datetime import datetime
 
 FRAMERATE = 10
-VIDEO_SIZE = "1280x720"
+VIDEO_SIZE = "896x504"
+REC_X = 0
+REC_Y = 0
+REC_W = 896
+REC_H = 504
 
 # Directory to save clips
 output_dir = "./screen_recordings"
@@ -22,14 +26,22 @@ def record_screen_clip():
         "-video_size", VIDEO_SIZE,  # Set your screen resolution here
         "-framerate", str(FRAMERATE),          # Frames per second
         "-pix_fmt", "uyvy422",
-        "-probesize", "10M",
+        "-probesize", "5M",
         "-f", "avfoundation",             # Screen capture for Linux; use "gdigrab" on Windows or "avfoundation" on macOS
         "-i", "4:1",                # Video : Audio
-        "-vf", "crop=800:600:100:100",
-        "-t", "3",                   # Duration of the clip (3 seconds)
+        # "-vf", f"crop={REC_H}:{REC_W}:{REC_X}:{REC_Y}",
+        "-vf", f"crop={REC_H}:{REC_W}",
+        # "-t", "3",                   # Duration of the clip (3 seconds)
         "-preset", "ultrafast",
-        "-crf", "28",
-        output_file
+        "-crf", "40",
+        "-tune", "zerolatency",
+        "-r", "10",
+        "-f", "segment",
+        "-strftime", "1",
+        "-segment_time", "3",
+        "-force_key_frames", "expr:gte(t,n_forced*3)",  # Ensure a keyframe every 3 seconds
+        "-reset_timestamps", "1",
+        f"{output_dir}/clip_%H-%M-%S.mp4"
     ]
 
     # Run FFmpeg command
@@ -39,7 +51,5 @@ def record_screen_clip():
 
 
 if __name__ == "__main__":
-    while True:
-        record_screen_clip()
-        time.sleep(3)  # Wait 3 seconds before the next clip
+    record_screen_clip()
 
