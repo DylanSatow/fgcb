@@ -25,7 +25,7 @@ def scroll_maybe(prob) -> bool:
     rand_num = random.random() 
 
     # Scroll
-    if rand_num <= prob:
+    if rand_num >= prob:
         return True
     # Don't scroll
     else:

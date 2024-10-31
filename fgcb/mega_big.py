@@ -31,42 +31,10 @@ def check_helpers():
         logging.error("Error pinging helper service: %s", e)
         exit(1)
 
-
-def get_clip():
-    latest_file = output_directory / Path(get_latest_files(output_directory, n=2)[1])
-    logging.info("Latest file retrieved: %s", latest_file.resolve().as_posix())
-
-    if not latest_file:
-        logging.warning("No video files found in the directory.")
-        exit(1)
-
-    return latest_file
-
-
-def take_action(feedback, watches):
-    if scroll_maybe(feedback["rating"] * 1 / watches):
-        logging.info("Scrolling to next video...")
-        send_request(endpoints["next"])
-        watches = 0
-    else:
-        watches += 1
-        logging.info("Not scrolling")
-
-def logger_config():
-    # Set up basic logging configuration
-    logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
-    logging.info("Application started")
-
-
-if __name__ == "__main__":
-
-    check_helpers()
-
-    LLM = LLM()
-    LLM.setIdentity(
-        # "Suppose you are a very liberal stereotypical 18 year old girl watching instagram reels."
+    LLM = LLM(
         "Suppose you are a stereotypical 16 year old guy from Kentucky watching instagram reels."
     )
+
     logging.info("LLM identity set")
 
     response = requests.post("http://localhost:4000/split")

@@ -22,14 +22,10 @@ class Video(typing.TypedDict):
 
 
 class LLM:
-    def __init__(self):
+    def __init__(self,desc):
         genai.configure(api_key="AIzaSyAqMZv0G9WPT085u2rykhtSq_iCqloSC0s")
         self.model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        self.prompt = PROMPT
-
-    def setIdentity(self, desc: str):
-        self.prompt = desc + self.prompt
-        print(self.prompt)
+        self.prompt = desc + PROMPT
 
     def score(self, video_file_name):
         print("Making LLM inference request...")
