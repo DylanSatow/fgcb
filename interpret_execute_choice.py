@@ -37,7 +37,7 @@ def send_request(endpoint_url, data=None, json=None):
     try:
         response = requests.post(endpoint_url, data=data, json=json)
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        print(f"POST request to {endpoint_url} successful. Status code: {response.status_code}")
+        # print(f"POST request to {endpoint_url} successful. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Error sending POST request to {endpoint_url}: {e}")
 

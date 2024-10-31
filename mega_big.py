@@ -1,5 +1,5 @@
 from LLM import LLM
-from interpret_execute_choice import scroll_maybe, send_request
+from interpret_execute_choice import scroll_maybe, send_request, endpoints
 
 import os
 import time
@@ -65,7 +65,14 @@ if __name__ == "__main__":
         logging.warning("No video files found in the directory.")
         exit(1)
 
-    score = LLM.score(latest_file.resolve().as_posix())
+    feedback = LLM.score(latest_file.resolve().as_posix())
 
     logging.info(f"Time to recieve: {time.time() - start_time}")
-    print(score)
+
+    print(feedback)
+
+    if scroll_maybe(feedback['rating']):
+        logging.info("Scrolling to next video...")
+        send_request(endpoints["next"])
+    else:
+        logging.info("Not scrolling")
