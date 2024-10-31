@@ -4,6 +4,8 @@ import os
 import logging
 import time
 import threading
+import signal
+import sys
 
 app = Flask(__name__)
 
@@ -29,7 +31,7 @@ def start_ffmpeg():
         "-framerate", "10",
         "-pix_fmt", "uyvy422",
         "-probesize", "5M",
-        "-f", "avfoundation", "-i", "3:1",
+        "-f", "avfoundation", "-i", "4:0",
         "-vf", "crop=1280:720,setpts=N/10/TB",  # Adjust to 10 to match framerate
         "-preset", "ultrafast",
         "-crf", "30",
@@ -96,6 +98,34 @@ def split_segment():
 @app.route('/status', methods=['GET'])
 def status():
     return {"status": "running"}
+
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    global ffmpeg_process
+    logging.info("Shutting down the server...")
+    
+    with lock:
+        if ffmpeg_process and ffmpeg_process.poll() is None:
+            ffmpeg_process.terminate()
+            ffmpeg_process.wait()  # Ensure it closes completely
+
+    shutdown_function = request.environ.get('werkzeug.server.shutdown')
+    if shutdown_function:
+        shutdown_function()
+    logging.info("Server has been shut down.")
+    return 'Server shutting down...', 200
+
+# Signal handler for graceful shutdown
+def signal_handler(sig, frame):
+    logging.info("Signal received, shutting down...")
+    if ffmpeg_process and ffmpeg_process.poll() is None:
+        ffmpeg_process.terminate()
+        ffmpeg_process.wait()  # Ensure it closes completely
+    sys.exit(0)
+
+# Register signal handlers
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000)
