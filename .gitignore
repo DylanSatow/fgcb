@@ -1,2 +1,3 @@
 screen_recordings/
 .DS_Store
+__pycache__/
