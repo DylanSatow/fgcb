@@ -24,12 +24,12 @@ def scroll_maybe(prob) -> bool:
 
     rand_num = random.random() 
 
-    # Don't scroll
-    if rand_num <= prob:
-        return False
     # Scroll
-    else:
+    if rand_num <= prob:
         return True
+    # Don't scroll
+    else:
+        return False
 
 
 def send_request(endpoint_url, data=None, json=None):
