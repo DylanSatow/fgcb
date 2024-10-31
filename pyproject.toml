@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "fgcb"
+version = "0.1.0"
+description = ""
+authors = ["Jake B <jacobboxerman@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.*"
+fastapi = "^0.115.4"
+flask = "^3.0.3"
+selenium = "^4.25.0"
+undetected-chromedriver = "^3.5.5"
+webdriver-manager = "4.0.0"
+appium-python-client = "^4.2.0"
+pyautogui = "^0.9.54"
+fastapi-cli = "^0.0.5"
+google-generativeai = "^0.8.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
