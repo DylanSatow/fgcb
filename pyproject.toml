@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.*"
 fastapi = "^0.115.4"
+flask = "^3.0.3"
 selenium = "^4.25.0"
 undetected-chromedriver = "^3.5.5"
 webdriver-manager = "4.0.0"
