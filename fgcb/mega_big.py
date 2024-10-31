@@ -9,7 +9,7 @@ from pathlib import Path
 import logging
 
 # Directory where recordings are saved
-output_directory = "./screen_recordings/"
+output_directory = "../screen_recordings/"
 
 
 def get_latest_files(directory, n=1):
@@ -47,7 +47,7 @@ def take_action(feedback, watches):
     if scroll_maybe(feedback["rating"] * 1 / watches):
         logging.info("Scrolling to next video...")
         send_request(endpoints["next"])
-        watches = 0
+        watches = 1
     else:
         watches += 1
         logging.info("Not scrolling")
@@ -62,9 +62,7 @@ if __name__ == "__main__":
 
     check_helpers()
 
-    LLM = LLM()
-    LLM.setIdentity(
-        # "Suppose you are a very liberal stereotypical 18 year old girl watching instagram reels."
+    LLM = LLM(
         "Suppose you are a stereotypical 16 year old guy from Kentucky watching instagram reels."
     )
     logging.info("LLM identity set")
@@ -72,11 +70,11 @@ if __name__ == "__main__":
     response = requests.post("http://localhost:4000/split")
     logging.info("First video split request sent")
 
-    watches = 0
+    watches = 1
 
     while True:
 
-        if watches:
+        if watches == 1:
 
             response = requests.post("http://localhost:4000/split")
             logging.info("Video split request sent")
@@ -92,7 +90,7 @@ if __name__ == "__main__":
 
             take_action(feedback, watches)
 
-        elif not watches:
+        else:
 
             time.sleep(3)
             response = requests.post("http://localhost:4000/split")

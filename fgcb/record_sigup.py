@@ -13,7 +13,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 # Directory for saving screen recordings
-output_directory = "./screen_recordings/"
+output_directory = "../screen_recordings/"
 os.makedirs(output_directory, exist_ok=True)
 
 # Global variable to hold the ffmpeg process
@@ -31,8 +31,8 @@ def start_ffmpeg():
         "-framerate", "10",
         "-pix_fmt", "uyvy422",
         "-probesize", "5M",
-        "-f", "avfoundation", "-i", "4:0",
-        "-vf", "crop=1280:720,setpts=N/10/TB",  # Adjust to 10 to match framerate
+        "-f", "avfoundation", "-i", "3:0",
+        "-vf", "crop=720:1280,setpts=N/10/TB",  # Adjust to 10 to match framerate
         "-preset", "ultrafast",
         "-crf", "30",
         "-tune", "zerolatency",
