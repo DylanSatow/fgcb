@@ -71,8 +71,62 @@ if __name__ == "__main__":
 
     print(feedback)
 
+    watches = 0
+
     if scroll_maybe(feedback['rating']):
-        logging.info("Scrolling to next video...")
+        logging.info("scrolling to next video...")
         send_request(endpoints["next"])
     else:
-        logging.info("Not scrolling")
+        watches += 1
+        logging.info("not scrolling")
+
+    while True:
+
+        if watches:
+
+            response = requests.post("http://localhost:4000/split")
+            logging.info("Video split request sent")
+            time.sleep(0.8)
+
+            latest_file = output_directory / Path(get_latest_files(output_directory, n=2)[1])
+            logging.info("Latest file retrieved: %s", latest_file.resolve().as_posix())
+
+            if not latest_file:
+                logging.warning("No video files found in the directory.")
+                exit(1)
+
+            feedback = LLM.score(latest_file.resolve().as_posix())
+
+            print(feedback)
+
+            if scroll_maybe(feedback['rating'] * 1/watches):
+                logging.info("Scrolling to next video...")
+                send_request(endpoints["next"])
+                watches = 0
+            else:
+                watches += 1
+                logging.info("Not scrolling")
+
+        elif not watches:
+
+            time.sleep(3)
+            response = requests.post("http://localhost:4000/split")
+            logging.info("Video split request sent")
+            time.sleep(0.8)
+
+            latest_file = output_directory / Path(get_latest_files(output_directory, n=2)[1])
+            logging.info("Latest file retrieved: %s", latest_file.resolve().as_posix())
+
+            if not latest_file:
+                logging.warning("No video files found in the directory.")
+                exit(1)
+
+            feedback = LLM.score(latest_file.resolve().as_posix())
+
+            if scroll_maybe(feedback['rating']):
+                logging.info("scrolling to next video...")
+                send_request(endpoints["next"])
+                watches = 0
+            else:
+                watches += 1
+                logging.info("not scrolling")
