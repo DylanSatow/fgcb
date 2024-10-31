@@ -23,3 +23,7 @@ async def press_down():
 async def click():
     pyautogui.click()
     time.sleep(command_delay)
+
+@app.get("/status")
+async def status():
+    return {"status": "running"}

@@ -93,5 +93,9 @@ def split_segment():
 
     return "New segment started", 200
 
+@app.route('/status', methods=['GET'])
+def status():
+    return {"status": "running"}
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000)
