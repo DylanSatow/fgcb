@@ -1,5 +1,6 @@
+import random
 from LLM import LLM
-from interpret_execute_choice import scroll_maybe, send_request, endpoints
+import pyautogui
 
 import os
 import time
@@ -10,6 +11,39 @@ import logging
 
 # Directory where recordings are saved
 output_directory = "../screen_recordings/"
+
+command_delay = 0.1
+def press_up():
+    pyautogui.press('up')
+    time.sleep(command_delay)
+
+def press_down():
+    pyautogui.press('down')
+    time.sleep(command_delay)
+
+def click():
+    pyautogui.click()
+    time.sleep(command_delay)
+
+def scroll_maybe(prob) -> bool:
+    """
+    Returns whether to scroll or not scroll based on probability.
+
+    Returns:
+        bool: scroll (True) or don't scroll (False)
+    """
+
+    if not (0.0 <= prob <= 1.0):
+        raise ValueError("Bad probability")
+
+    rand_num = random.random() 
+
+    # Scroll
+    if rand_num >= prob:
+        return True
+    # Don't scroll
+    else:
+        return False
 
 
 def get_latest_files(directory, n=1):
@@ -26,7 +60,6 @@ def check_helpers():
     logging.info("Pinging helper services...")
     try:
         response = requests.get("http://localhost:4000/status")
-        response = requests.get("http://localhost:8000/status")
     except requests.exceptions.RequestException as e:
         logging.error("Error pinging helper service: %s", e)
         exit(1)
@@ -46,7 +79,7 @@ def get_clip():
 def take_action(feedback, watches):
     if scroll_maybe(feedback["rating"] * 1 / watches):
         logging.info("Scrolling to next video...")
-        send_request(endpoints["next"])
+        press_up()
         watches = 1
     else:
         watches += 1
